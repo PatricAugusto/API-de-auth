@@ -1,6 +1,7 @@
 require('dotenv').config(); 
 const express = require('express');
 const authRoutes = require('./routes/authRotes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -9,6 +10,7 @@ app.use(express.json());
 
 // Todas as rotas de auth ficam sob o prefixo /auth
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 
 // Rota de teste para confirmar que o servidor está no ar
 app.get('/health', (req, res) => {
