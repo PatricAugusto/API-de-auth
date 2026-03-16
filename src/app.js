@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const authRoutes = require('./routes/authRotes');
 const userRoutes = require('./routes/userRoutes');
+const errorMiddleware = require('./middlewares/errorMiddleware');
+const notFoundMiddleware = require('./middlewares/notFoundMiddleware');
 
 const app = express();
 
@@ -16,6 +18,11 @@ app.use('/users', userRoutes);
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Servidor funcionando!' });
 });
+// Deve ficar APÓS as rotas — captura rotas inexistentes
+app.use(notFoundMiddleware);
+
+// Deve ser SEMPRE o último middleware — captura todos os erros
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

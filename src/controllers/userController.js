@@ -2,7 +2,7 @@ const UserModel = require('../models/userModel');
 
 const userController = {
   // Retorna os dados do próprio usuário logado
-  async me(req, res) {
+  async me(req, res, next) {
     try {
       const user = UserModel.findById(req.user.id);
 
@@ -14,7 +14,7 @@ const userController = {
 
       return res.status(200).json({ user: userWithoutPassword });
     } catch (error) {
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      next(error);
     }
   },
 
@@ -24,7 +24,7 @@ const userController = {
       const users = UserModel.getAll().map(({ password: _, ...user }) => user);
       return res.status(200).json({ users });
     } catch (error) {
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      next(error);
     }
   },
 };

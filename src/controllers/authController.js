@@ -21,16 +21,11 @@ const authController = {
         user,
       });
     } catch (error) {
-      // Erro de negócio (ex: email duplicado)
-      if (error.message === 'Email já cadastrado') {
-        return res.status(409).json({ error: error.message });
+        next(error);
       }
-
-      // Erro inesperado
-      return res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  },
-async login(req, res) {
+    },
+  
+async login(req, res, next) {
     try {
       const { email, password } = req.body;
 
@@ -45,10 +40,7 @@ async login(req, res) {
         ...data,
       });
     } catch (error) {
-      if (error.message === 'Credenciais inválidas') {
-        return res.status(401).json({ error: error.message });
-      }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      next(error);
     }
   },
 
@@ -67,17 +59,11 @@ async login(req, res) {
         ...tokens,
       });
     } catch (error) {
-      if (
-        error.message === 'Refresh token inválido' ||
-        error.message === 'Refresh token expirado'
-      ) {
-        return res.status(401).json({ error: error.message });
-      }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      next(error);
     }
   },
 
-  async logout(req, res) {
+  async logout(req, res, next) {
     try {
       const { refreshToken } = req.body;
 
@@ -89,10 +75,7 @@ async login(req, res) {
 
       return res.status(200).json({ message: 'Logout realizado com sucesso!' });
     } catch (error) {
-      if (error.message === 'Token não encontrado') {
-        return res.status(404).json({ error: error.message });
-      }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      next(error);
     }
   },
 };
